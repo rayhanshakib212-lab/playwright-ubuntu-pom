@@ -29,7 +29,7 @@ def test_api_get_token(playwright:Playwright):
 
 	api_calls =  APIUtils()
 	Token =	api_calls.getToken(playwright)
-	browser = playwright.chromium.launch(headless=False)
+	browser = playwright.chromium.launch(headless=True)
 	context = browser.new_context()
 	page = context.new_page()
 	page.add_init_script(f"""localStorage.setItem('token', '{Token}')""")
