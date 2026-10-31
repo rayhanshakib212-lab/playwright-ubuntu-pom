@@ -25,15 +25,15 @@ def test_e2e_order(page:Page):
 
 
 
-def test_api_get_token(playwright:Playwright):
+def test_api_get_token(logged_in_page):
 
-	api_calls =  APIUtils()
-	Token =	api_calls.getToken(playwright)
-	browser = playwright.chromium.launch(headless=True)
-	context = browser.new_context()
-	page = context.new_page()
-	page.add_init_script(f"""localStorage.setItem('token', '{Token}')""")
-	page.goto("https://rahulshettyacademy.com/client")
-	page.get_by_role("button", name="ORDERS").click()
-	expect(page.get_by_text('Your Orders')).to_be_visible()
+	#api_calls =  APIUtils()
+	#Token =	api_calls.getToken(playwright) no longer needed, we move it to the fixture login_token
+	#browser = playwright.chromium.launch(headless=True)
+	#context = browser.new_context()
+	#page = context.new_page()
+	#page.add_init_script(f"""localStorage.setItem('token', '{login_token}')""")
+	#page.goto("https://rahulshettyacademy.com/client")**we wont need this because of 'logged_in_page' fixture**
+	logged_in_page.get_by_role("button", name="ORDERS").click()
+	expect(logged_in_page.get_by_text('Your Orders')).to_be_visible()
 
