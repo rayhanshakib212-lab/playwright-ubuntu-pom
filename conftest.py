@@ -6,26 +6,26 @@ import allure
 
 @pytest.fixture
 def login_token(playwright):
-	api = APIUtils()
-	return api.getToken(playwright)
+    api = APIUtils()
+    return api.getToken(playwright)
 
 
 
 
 @pytest.fixture
 def logged_in_page(playwright, login_token):
-	browser = playwright.chromium.launch(headless=True)
-	context = browser.new_context()
-	page = context.new_page()
+    browser = playwright.chromium.launch(headless=True)
+    context = browser.new_context()
+    page = context.new_page()
 
-	page.add_init_script(
-		f"""localStorage.setItem('token', '{login_token}')"""
+    page.add_init_script(
+        f"""localStorage.setItem('token', '{login_token}')"""
 
-	)
+    )
 
-	page.goto("https://rahulshettyacademy.com/client")
+    page.goto("https://rahulshettyacademy.com/client")
 
-	return page
+    return page
 
 
 
@@ -40,12 +40,12 @@ def pytest_runtest_makereport(item, call):
 
         if page is None:
             page = item.funcargs.get("page")
-	if page:
-	    screenshot = page.screenshot()
 
-	    allure.attach(
-	        screenshot,
-	        name="Failure Screenshot",
-	        attachment_type=allure.attachment_type.PNG
-	    )
+        if page:
+            screenshot = page.screenshot()
 
+            allure.attach(
+                screenshot,
+                name="Failure Screenshot",
+                attachment_type=allure.attachment_type.PNG
+            )
