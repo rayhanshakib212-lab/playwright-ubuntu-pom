@@ -55,3 +55,47 @@ def pytest_runtest_makereport(item, call):
 
 def pytest_configure(config):
     config.option.tracing = "retain-on-failure"
+
+
+
+
+def pytest_addoption(parser):
+	parser.addoption(
+		"--browser_name",
+		action="store",
+		default="chromium",
+		help="Browser: chromium, firefox, or webkit"
+		)
+
+
+@pytest.fixture
+def browser_name(request):
+	return request.config.getoption("--browser_name")
+
+
+
+
+
+@pytest.fixture
+def page(playwright, request):
+	browser_name = request.config.getoption("--browser_name")
+
+	if browser_name == "chromium":
+	   browser = playwright.chromium.launch(headless=True)
+	elif browser_name =="firefox":
+	   browser = playwright.firefox.launch(headless=True)
+	elif browser_name == "webkit":
+	   browser = playwright.webkit.launch(headless=True)
+	else:
+	   raise ValueError(f"Unsupported browser: {browser_name}")
+
+	context = browser.new_context()
+	page = context.new_page()
+
+	yield page
+
+	context.close()
+	browser.close()
+
+
+
