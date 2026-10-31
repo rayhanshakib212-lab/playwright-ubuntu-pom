@@ -49,3 +49,9 @@ def pytest_runtest_makereport(item, call):
                 name="Failure Screenshot",
                 attachment_type=allure.attachment_type.PNG
             )
+
+
+
+
+def pytest_configure(config):
+    config.option.tracing = "retain-on-failure"
