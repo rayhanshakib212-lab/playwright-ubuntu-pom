@@ -37,3 +37,11 @@ def test_api_get_token(logged_in_page):
 	logged_in_page.get_by_role("button", name="ORDERS").click()
 	expect(logged_in_page.get_by_text('Your Orders')).to_be_visible()
 
+
+
+
+
+def test_for_screenshots(logged_in_page):
+	logged_in_page.get_by_role("button", name="ORDERS").click()
+	expect(logged_in_page.get_by_text('Your rders')).to_be_visible() # will fail here
+

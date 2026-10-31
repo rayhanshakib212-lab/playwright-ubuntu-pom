@@ -22,9 +22,17 @@ jobs:
 
       - name: InstalL dependencies
         run: |
-          pip install pytest pytest-playwright
+          pip install pytest pytest-playwright allure-pytest
           playwright install --with-deps chromium
 
 
       - name: Run Playwright tests
-        run: pytest test_order.py
+        run: pytest test_order.py --alluredir=allure-results
+
+
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
