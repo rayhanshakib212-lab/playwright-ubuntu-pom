@@ -24,7 +24,10 @@ on:
           - smoke
           - regression
           - api
-
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   tests:
@@ -41,9 +44,14 @@ jobs:
         with:
             python-version: "3.14"
 
-      - name: InstalL dependencies
+      - name: Install dependencies
         run: |
-          pip install pytest pytest-playwright allure-pytest pytest-rerunfailures
+          pip install pytest pytest-playwright allure-pytest pytest-rerunfailures pytest-xdist
+          sudo apt-get update
+          sudo apt-get install -y default-jre
+          wget https://github.com/allure-framework/allure2/releases/download/2.46.1/allure_2.46.1-1_all.deb
+          sudo dpkg -i allure_2.46.1-1_all.deb
+          allure --version                   
           playwright install --with-deps chromium firefox webkit
 
 
@@ -62,3 +70,32 @@ jobs:
         with:
           name: allure-results
           path: allure-results
+
+      - name: Generate Allure HTML report
+        if: always()
+        run: |
+          allure generate allure-results -o allure-report --clean
+
+      - name: Configure GitHub Pages
+        if: always()
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        if: always()
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: allure-report      
+
+  deploy:
+    needs: tests
+    if: always()
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
