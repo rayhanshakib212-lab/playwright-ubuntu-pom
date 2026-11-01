@@ -1,4 +1,5 @@
 from playwright.sync_api import Page
+import pytest
 
 class checkoutpage:
 	def __init__(self, page: Page):
@@ -11,11 +12,11 @@ class checkoutpage:
 		self.placeorder_button = self.page.get_by_text("Place Order")
 
 
-	def fillout_checkout(self):
-		self.credit_card.fill("4542 9931 9292 2293")
-		self.CVVCode.fill("347")
-		self.nameoncard.fill("Rayhan Shakib")
-		self.country_dropdown.type("ind")
+	def fillout_checkout(self, card, cvv, name, country):
+		self.credit_card.fill(card)
+		self.CVVCode.fill(cvv)
+		self.nameoncard.fill(name)
+		self.country_dropdown.type(country)
 		self.country_dropdown.press("Enter")
 		self.dropdown_option.nth(1).click() # selecting second option 'india' from dropdown
 		self.placeorder_button.click()

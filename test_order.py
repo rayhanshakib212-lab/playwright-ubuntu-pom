@@ -5,7 +5,17 @@ from pages.cart_page import cartPage
 from pages.checkout_page import checkoutpage
 from utils.api_utils import APIUtils
 import pytest
-def test_e2e_order(page:Page):
+
+
+
+@pytest.mark.parametrize(
+ "card, cvv, name, country",
+    [
+        ("4542 9931 9292 2293", "347", "Rayhan Shakib", "ind"),
+        ("4111 1111 1111 1111", "123", "User Two", "ind"),
+    ]
+)
+def test_e2e_order(page:Page, card, cvv, name, country):
 
 
 	loginpage =  LoginPage(page)
@@ -20,7 +30,7 @@ def test_e2e_order(page:Page):
 
 	cart.confirm_cart()
 
-	checkout.fillout_checkout()
+	checkout.fillout_checkout(card, cvv, name, country)
 
 
 
@@ -44,4 +54,19 @@ def test_api_get_token(logged_in_page):
 def test_for_screenshots(logged_in_page):
 	logged_in_page.get_by_role("button", name="ORDERS").click()
 	expect(logged_in_page.get_by_text('Your rders')).to_be_visible() # will fail here
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

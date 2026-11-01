@@ -99,3 +99,7 @@ def page(playwright, request):
 
 
 
+def pytest_configure(config):
+	config.option.reruns = 2
+	config.option.reruns_delay = 1
+	config.option.numprocesses = 2
