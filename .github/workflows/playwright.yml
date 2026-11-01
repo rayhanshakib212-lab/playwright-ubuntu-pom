@@ -3,17 +3,17 @@ name: Playwright Tests
 on:
   push:
     branches: [main]
-workflow_dispatch:
-  inputs:
-    browser:
-      description: "Choose browser"
-      required: true
-      default: "chromium"
-      type: choice
-      options:
-        - chromium
-        - firefox
-        - webkit
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: "Choose browser"
+        required: true
+        default: "chromium"
+        type: choice
+        options:
+          - chromium
+          - firefox
+          - webkit
 jobs:
   tests:
     runs-on: ubuntu-latest
