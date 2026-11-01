@@ -14,17 +14,16 @@ on:
           - chromium
           - firefox
           - webkit
-
-    suite:
-      description: "Choose test suite"
-      required: true
-      default: "all"
-      type: choice
-      options:
-        - all
-        - smoke
-        - regression
-        - api
+      suite:
+        description: "Choose test suite"
+        required: true
+        default: "all"
+        type: choice
+        options:
+          - all
+          - smoke
+          - regression
+          - api
 
 
 jobs:
