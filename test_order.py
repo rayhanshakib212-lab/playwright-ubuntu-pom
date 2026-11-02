@@ -50,7 +50,7 @@ def test_api_get_token(logged_in_page):
 
 
 
-@pytest.mark.xfail(reason="Intentinal failure to test screenshot capture")
+#@pytest.mark.xfail(reason="Intentinal failure to test screenshot capture")
 def test_for_screenshots(logged_in_page):
 	logged_in_page.get_by_role("button", name="ORDERS").click()
 	expect(logged_in_page.get_by_text('Your rders')).to_be_visible() # will fail here
