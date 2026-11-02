@@ -58,9 +58,9 @@ jobs:
       - name: Run Playwright tests
         run: |
           if [ "${{ inputs.suite || 'all' }}" = "all" ]; then
-            pytest test_order.py --browser_name "${{ inputs.browser || 'chromium' }}" --alluredir=allure-results
+            pytest test_order.py --browser_name "${{ inputs.browser || 'chromium' }}" --alluredir=allure-results --clean-alluredir
           else
-            pytest test_order.py -m "${{ inputs.suite }}" --browser_name "${{ inputs.browser || 'chromium' }}" --alluredir=allure-results
+            pytest test_order.py -m "${{ inputs.suite }}" --browser_name "${{ inputs.browser || 'chromium' }}" --alluredir=allure-results --clean-alluredir
           fi
 
 
