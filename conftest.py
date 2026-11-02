@@ -13,10 +13,13 @@ def login_token(playwright):
 
 
 @pytest.fixture
-def logged_in_page(playwright, login_token):
-    browser = playwright.chromium.launch(headless=True)
-    context = browser.new_context()
-    page = context.new_page()
+def logged_in_page(page, login_token):
+    page.console_logs = []
+
+    page.on(
+        "console",
+        lambda msg: page.console_logs.append(msg.text)
+    )
 
     page.add_init_script(
         f"""localStorage.setItem('token', '{login_token}')"""
@@ -34,7 +37,9 @@ def pytest_runtest_makereport(item, call):
     outcome = yield
     report = outcome.get_result()
 
-    if report.when == "call" and report.failed:
+    is_xfail = report.skipped and hasattr(report, "wasxfail")
+
+    if report.when == "call" and (report.failed or is_xfail):
 
         page = item.funcargs.get("logged_in_page")
 
@@ -49,28 +54,33 @@ def pytest_runtest_makereport(item, call):
                 name="Failure Screenshot",
                 attachment_type=allure.attachment_type.PNG
             )
+            
+            if hasattr(page, "console_logs"):
+                allure.attach(
+                    "\n".join(page.console_logs),
+                    name="Browser Console Logs",
+                    attachment_type=allure.attachment_type.TEXT
+                )
 
 
 
 
-def pytest_configure(config):
-    config.option.tracing = "retain-on-failure"
 
 
 
 
 def pytest_addoption(parser):
-	parser.addoption(
-		"--browser_name",
-		action="store",
-		default="chromium",
-		help="Browser: chromium, firefox, or webkit"
-		)
+    parser.addoption(
+        "--browser_name",
+        action="store",
+        default="chromium",
+        help="Browser: chromium, firefox, or webkit"
+    )
 
 
 @pytest.fixture
 def browser_name(request):
-	return request.config.getoption("--browser_name")
+    return request.config.getoption("--browser_name")
 
 
 
@@ -78,28 +88,36 @@ def browser_name(request):
 
 @pytest.fixture
 def page(playwright, request):
-	browser_name = request.config.getoption("--browser_name")
+    browser_name = request.config.getoption("--browser_name")
 
-	if browser_name == "chromium":
-	   browser = playwright.chromium.launch(headless=True)
-	elif browser_name =="firefox":
-	   browser = playwright.firefox.launch(headless=True)
-	elif browser_name == "webkit":
-	   browser = playwright.webkit.launch(headless=True)
-	else:
-	   raise ValueError(f"Unsupported browser: {browser_name}")
+    if browser_name == "chromium":
+        browser = playwright.chromium.launch(headless=True)
+    elif browser_name == "firefox":
+        browser = playwright.firefox.launch(headless=True)
+    elif browser_name == "webkit":
+        browser = playwright.webkit.launch(headless=True)
+    else:
+        raise ValueError(f"Unsupported browser: {browser_name}")
 
-	context = browser.new_context()
-	page = context.new_page()
+    context = browser.new_context()
+    page = context.new_page()
 
-	yield page
+    page.console_logs = []
 
-	context.close()
-	browser.close()
+    page.on(
+        "console",
+        lambda msg: page.console_logs.append(msg.text)
+    )
+
+    yield page
+
+    context.close()
+    browser.close()
 
 
 
 def pytest_configure(config):
-	config.option.reruns = 2
-	config.option.reruns_delay = 1
-	config.option.numprocesses = 2
+    config.option.tracing = "on"
+    config.option.reruns = 2
+    config.option.reruns_delay = 1
+    config.option.numprocesses = 2

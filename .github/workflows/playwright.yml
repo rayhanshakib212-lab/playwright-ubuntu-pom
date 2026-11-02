@@ -71,6 +71,13 @@ jobs:
           name: allure-results
           path: allure-results
 
+      - name: Upload Playwright traces
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: test-results/
+          
       - name: Generate Allure HTML report
         if: always()
         run: |

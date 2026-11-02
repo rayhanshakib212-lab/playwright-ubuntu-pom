@@ -1,1 +1,0 @@
-{'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YWFlOWNmZTJiZTdhNGJjMmI1YWZlMTQiLCJ1c2VyRW1haWwiOiJzbWFydGhxQGdtYWlsLmNvbSIsInVzZXJNb2JpbGUiOjQ0NDMzMzIyMjIsInVzZXJSb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3OTM0OTA0OTgsImV4cCI6MTgyNTA0ODA5OH0.aaSuIh3g2ppngUXSQkL8vK8SJRoCHHJF9fwYfcrlDmk', 'userId': '6aae9cfe2be7a4bc2b5afe14', 'message': 'Login Successfully'}
