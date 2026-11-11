@@ -177,4 +177,40 @@ def test_mock_user_404(page: Page):
     # body["status"] equals 404.
     # body["userId"] equals 999.
 
+def test_mock_500(page: Page):
+    mock_error = {
+        'message' :"Internal Server Error",
+        'status':500,
+        'cartId':5}
 
+
+    def mock_response(route: Route):
+        route.fulfill(
+            status = 500,
+            json = mock_error
+
+        )
+
+
+    page.route("**/carts/5",mock_response)
+
+    with page.expect_response("**/carts/5") as response_info:
+        page.goto("https://dummyjson.com/carts/5")
+
+
+    response = response_info.value
+
+    assert response.status == 500
+
+    body = response.json()
+
+    assert body["message"] == "Internal Server Error"
+
+    assert body["status"] == 500
+    
+    assert body["cartId"] == 5
+
+
+    print(f"{body["message"]}"
+          
+          f'the card id is {body["cartId"]}')
