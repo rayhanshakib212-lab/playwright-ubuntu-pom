@@ -214,3 +214,53 @@ def test_mock_500(page: Page):
     print(f"{body["message"]}"
           
           f'the card id is {body["cartId"]}')
+
+
+
+
+
+def test_mock_401(page: Page):
+    mock_error = {
+    
+    'message':	"Invalid or expired token",
+    'status':	401,
+    'authenticated':	False
+
+
+
+    }
+
+
+
+
+    def mock_response(route: Route):
+        route.fulfill(
+            status = 401,
+            json = mock_error
+
+
+        )
+
+
+
+    page.route("**/auth/me",mock_response)
+
+
+
+    with page.expect_response("**/auth/me") as response_info:
+        page.goto("https://dummyjson.com/auth/me")
+
+
+    response = response_info.value
+
+    body = response.json()
+
+
+    assert response.status == 401
+    assert body["message"] == mock_error["message"]
+    assert body["status"] == mock_error["status"]
+    assert body["authenticated"] is False
+
+    print(f'this error message is : {body["message"]}')
+
+
